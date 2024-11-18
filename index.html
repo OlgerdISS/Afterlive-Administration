@@ -1,0 +1,441 @@
+<html><head><base href="." /><meta charset="UTF-8"><title>Afterlife Administration</title>
+<style>
+:root {
+  --dark-red: #8B0000;
+  --fire-orange: #FF4500;
+  --heaven-blue: #4A90E2;
+  --holy-gold: #F5C242;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  transition: all 0.5s ease;
+}
+
+body.hell {
+  background-color: #1E1E1E;
+  color: #E0E0E0;
+}
+
+body.heaven {
+  background-color: #F5F7FA;
+  color: #333;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.5s ease;
+}
+
+.hell .header {
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid var(--fire-orange);
+}
+
+.heaven .header {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--heaven-blue);
+}
+
+.realm-switch {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  z-index: 9999;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hell .realm-switch {
+  background: linear-gradient(135deg, var(--heaven-blue), #6BA5E7);
+  color: white;
+}
+
+.heaven .realm-switch {
+  background: linear-gradient(135deg, var(--dark-red), var(--fire-orange));
+  color: white;
+}
+
+.soul-card {
+  margin: 20px 0;
+  padding: 25px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+}
+
+.hell .soul-card {
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(255, 69, 0, 0.3);
+}
+
+.heaven .soul-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(74, 144, 226, 0.3);
+}
+
+.soul-card:hover {
+  transform: translateY(-5px);
+}
+
+.hell .soul-card:hover {
+  box-shadow: 0 8px 15px rgba(255, 69, 0, 0.2);
+}
+
+.heaven .soul-card:hover {
+  box-shadow: 0 8px 15px rgba(74, 144, 226, 0.2);
+}
+
+.action-input {
+  width: 100%;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  resize: vertical;
+}
+
+.hell .action-input {
+  background: rgba(30, 30, 30, 0.9);
+  border: 1px solid var(--fire-orange);
+  color: #E0E0E0;
+}
+
+.heaven .action-input {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--heaven-blue);
+  color: #333;
+}
+
+.confirm-btn {
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 14px;
+}
+
+.hell .confirm-btn {
+  background: linear-gradient(135deg, var(--dark-red), var(--fire-orange));
+  color: white;
+}
+
+.heaven .confirm-btn {
+  background: linear-gradient(135deg, var(--heaven-blue), #6BA5E7);
+  color: white;
+}
+
+.hell .confirm-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 69, 0, 0.3);
+}
+
+.heaven .confirm-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.confirm-btn:disabled {
+  background: #666;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.secret-modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 40px;
+  border-radius: 10px;
+  z-index: 10000;
+  text-align: center;
+  width: 300px;
+  height: 200px;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.qr-modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.9);
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 10000;
+  text-align: center;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  color: #ff4444;
+}
+
+.secret-button {
+  padding: 20px 40px;
+  font-size: 24px;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 80%;
+  height: 100px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>
+</head>
+<body class="hell">
+<div class="header">
+  <h1 id="realm-title">Hell Administration</h1>
+  <h2 id="realm-subtitle">Sinner Management System</h2>
+</div>
+
+<button class="realm-switch" onclick="toggleRealm()">Switch to Heaven</button>
+
+<div id="souls-container"></div>
+
+<div id="secretModal" class="secret-modal" style="display: none;">
+  <button onclick="activateCrazyMode()" class="secret-button">???</button>
+</div>
+
+<div id="qrModal" class="qr-modal">
+  <button class="close-button" onclick="closeQRModal()">✕</button>
+  <img src="1a4d4ccb7973e14c946a89b9c16de8e2.webp" alt="Secret QR code" width="200" height="200">
+  <p style="color: white; font-family: monospace; margin-top: 15px; font-size: 12px;">
+    tffbe://pduhq.saasxq.oay/ruxq/p/1lo0X-P7S43YQehDPtxAOv1THqmDA5uJp/huqi?geb=etmduzs
+  </p>
+</div>
+
+<script>
+let secretCode = '';
+let secretTimer;
+
+const crimesList = ["Murder", "Corruption", "Blackmail", "Fraud", "Treason", 
+                    "Torture", "Conspiracy", "Vandalism", "Sabotage", "Extortion"];
+
+const goodDeedsList = ["Saved a life", "Built orphanage", "Founded charity", 
+                      "Environmental protection", "Humanitarian aid",
+                      "Medical volunteer", "Educational support", 
+                      "Community service", "Animal welfare", "Peace advocacy"];
+
+let currentRealm = 'hell';
+const souls = {
+  hell: [],
+  heaven: []
+};
+
+// Initialize both realms with 100 souls each
+for(let i = 1; i <= 100; i++) {
+  souls.hell.push({
+    id: i,
+    actions: generateRandomActions(true),
+    response: '',
+    confirmed: false
+  });
+  
+  souls.heaven.push({
+    id: i,
+    actions: generateRandomActions(false),
+    response: '',
+    confirmed: false
+  });
+}
+
+function generateRandomActions(isSinner) {
+  const list = isSinner ? crimesList : goodDeedsList;
+  const numActions = Math.floor(Math.random() * 4) + 1;
+  const selectedActions = [];
+  for(let i = 0; i < numActions; i++) {
+    const randomAction = list[Math.floor(Math.random() * list.length)];
+    if(!selectedActions.includes(randomAction)) {
+      selectedActions.push(randomAction);
+    }
+  }
+  return selectedActions;
+}
+
+function confirmAction(id) {
+  const soul = souls[currentRealm].find(s => s.id === id);
+  const actionInput = document.getElementById(`action-${id}`);
+  const response = actionInput.value;
+  
+  if (!response) return;
+
+  soul.response = response;
+  soul.confirmed = true;
+  
+  renderSouls();
+}
+
+function toggleRealm() {
+  currentRealm = currentRealm === 'hell' ? 'heaven' : 'hell';
+  document.body.className = currentRealm;
+  
+  const realmTitle = document.getElementById('realm-title');
+  const realmSubtitle = document.getElementById('realm-subtitle');
+  const switchButton = document.querySelector('.realm-switch');
+  
+  if (currentRealm === 'hell') {
+    realmTitle.textContent = 'Hell Administration';
+    realmSubtitle.textContent = 'Sinner Management System';
+    switchButton.textContent = 'Switch to Heaven';
+  } else {
+    realmTitle.textContent = 'Heaven Administration';
+    realmSubtitle.textContent = 'Saint Management System';
+    switchButton.textContent = 'Switch to Hell';
+  }
+  
+  renderSouls();
+}
+
+function renderSouls() {
+  const container = document.getElementById('souls-container');
+  container.innerHTML = '';
+  
+  souls[currentRealm].forEach(soul => {
+    const card = document.createElement('div');
+    card.className = 'soul-card';
+    const title = currentRealm === 'hell' ? 'Sinner' : 'Saint';
+    const actionsLabel = currentRealm === 'hell' ? 'Crimes' : 'Good Deeds';
+    const responseLabel = currentRealm === 'hell' ? 'Punishment' : 'Reward';
+    
+    card.innerHTML = `
+      <h3>${title} #${soul.id}</h3>
+      <p><strong>${actionsLabel}:</strong> ${soul.actions.join(', ')}</p>
+      <div>
+        ${soul.confirmed ? 
+          `<p><strong>${responseLabel}:</strong> ${soul.response}</p>` :
+          `<div>
+            <textarea id="action-${soul.id}" class="action-input" 
+              placeholder="Enter ${responseLabel.toLowerCase()} here..."></textarea>
+            <button onclick="confirmAction(${soul.id})" class="confirm-btn">
+              Confirm
+            </button>
+          </div>`
+        }
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+document.addEventListener('keypress', (e) => {
+  clearTimeout(secretTimer);
+  secretCode += e.key;
+  
+  if(secretCode.includes('1230')) {
+    document.getElementById('secretModal').style.display = 'block';
+    secretCode = '';
+  }
+  
+  // Check for 666 in heaven or 777 in hell
+  if((currentRealm === 'heaven' && secretCode.includes('666')) || 
+     (currentRealm === 'hell' && secretCode.includes('777'))) {
+    replaceAllText();
+  }
+  
+  // Reset the code after 1 second of no typing
+  secretTimer = setTimeout(() => {
+    secretCode = '';
+  }, 1000);
+});
+
+function replaceAllText() {
+  const container = document.getElementById('souls-container');
+  const cards = container.getElementsByClassName('soul-card');
+  
+  // Replace text in header with proper spacing
+  document.getElementById('realm-title').textContent = 'GET OUT OF HERE!';
+  document.getElementById('realm-subtitle').textContent = 'GET OUT OF HERE!';
+  
+  // Replace the realm switch button text
+  document.querySelector('.realm-switch').textContent = 'GET OUT OF HERE!';
+  
+  // Replace text in each soul card with proper spacing
+  Array.from(cards).forEach(card => {
+    // Replace all text nodes while preserving structure
+    const walk = document.createTreeWalker(
+      card,
+      NodeFilter.SHOW_TEXT,
+      null,
+      false
+    );
+    
+    let node;
+    while(node = walk.nextNode()) {
+      const trimmed = node.nodeValue.trim();
+      if(trimmed) {
+        // Ensure proper spacing around replaced text
+        node.nodeValue = node.nodeValue.replace(trimmed, 'GET OUT OF HERE!');
+      }
+    }
+    
+    // Replace input placeholder if it exists
+    const input = card.querySelector('.action-input');
+    if(input) {
+      input.placeholder = 'GET OUT OF HERE!';
+    }
+  });
+}
+
+function activateCrazyMode() {
+  document.getElementById('secretModal').style.display = 'none';
+  document.getElementById('qrModal').style.display = 'block';
+}
+
+function closeQRModal() {
+  document.getElementById('qrModal').style.display = 'none';
+}
+
+renderSouls();
+</script>
+</body></html>
